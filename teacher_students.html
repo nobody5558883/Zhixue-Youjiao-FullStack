@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师个人信息 - 智学优教</title>
+    <style>
+        html, body { height: 100%; }
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .bg-img {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: url('background.jpg') center center/cover no-repeat;
+        }
+        .bg-mask {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.75);
+            z-index: 1;
+        }
+        .navbar {
+            width: 100vw;
+            min-width: 320px;
+            background: #F5F7FA;
+            box-shadow: 0 2px 8px rgba(42,77,155,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            z-index: 10;
+        }
+        .navbar-inner {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .navbar-logo {
+            height: 48px;
+        }
+        .navbar-title {
+            font-size: 26px;
+            color: #2A4D9B;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .welcome {
+            color: #2A4D9B;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .logout-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #1d3570;
+        }
+        .main-container {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            margin-top: 110px;
+            padding: 0 24px 40px 24px;
+        }
+        .profile-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 22px;
+            box-shadow: 0 4px 16px rgba(42,77,155,0.10);
+            padding: 44px 32px 32px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-title {
+            font-size: 24px;
+            color: #2A4D9B;
+            font-weight: bold;
+            margin-bottom: 32px;
+        }
+        form {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .form-label {
+            flex: 0 0 120px;
+            color: #2A4D9B;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: right;
+        }
+        .form-input, .form-select, .form-textarea {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #BFD2F6;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #F5F7FA;
+            color: #2A4D9B;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border: 1.5px solid #2A4D9B;
+        }
+        .form-radio-group, .form-checkbox-group {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+        .form-radio, .form-checkbox {
+            accent-color: #2A4D9B;
+            width: 18px;
+            height: 18px;
+        }
+        .form-textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .file-list {
+            margin-top: 4px;
+            color: #2A4D9B;
+            font-size: 14px;
+        }
+        .save-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 0;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 28px;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .save-btn:hover {
+            background: #1d3570;
+        }
+        .success-tip {
+            color: #2A4D9B;
+            background: #EAF3FF;
+            border-radius: 8px;
+            padding: 10px 20px;
+            text-align: center;
+            margin: 0 auto 20px auto;
+            font-size: 16px;
+            display: none;
+            width: 200px;
+            box-shadow: 0 2px 8px rgba(42,77,155,0.1);
+        }
+        @media (max-width: 600px) {
+            .main-container { margin-top: 80px; }
+            .profile-card { padding: 24px 6px 18px 6px; }
+            .profile-title { font-size: 20px; }
+            .form-label { font-size: 14px; }
+            .save-btn { font-size: 16px; }
+        }
+        .form-checkbox-group {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .form-checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 400;
+            color: #2A4D9B;
+            gap: 4px;
+        }
+        /* 让checkbox和文字紧凑且一行显示 */
+        .form-checkbox-group input[type="checkbox"] {
+            margin-right: 4px;
+        }
+        .file-upload input[type="file"] {
+            font-size: 15px;
+            padding: 10px 0;
+            background: #F5F7FA;
+            border-radius: 8px;
+            border: 1.5px solid #BFD2F6;
+            color: #2A4D9B;
+        }
+        .back-link {
+            display: block;
+            margin-top: 32px;
+            font-size: 18px;
+            color: #2A4D9B;
+            text-align: center;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #FFD600;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-img"></div>
+    <div class="bg-mask"></div>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <img src="logo.jpg" alt="logo" class="navbar-logo">
+                <span class="navbar-title">智学优教——一站式服务平台</span>
+            </div>
+            <div class="navbar-right">
+                <span class="welcome" id="welcomeText">欢迎，老师</span>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="profile-card">
+            <div class="profile-title">教师个人信息</div>
+            <div class="success-tip" id="successTip">保存成功</div>
+            <form id="profileForm" autocomplete="off">
+                <div class="form-group">
+                    <label class="form-label" for="name">姓名</label>
+                    <input class="form-input" id="name" name="name" type="text" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">性别</label>
+                    <div class="form-radio-group">
+                        <label><input class="form-radio" type="radio" name="gender" value="男" required> 男</label>
+                        <label><input class="form-radio" type="radio" name="gender" value="女"> 女</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="age">年龄</label>
+                    <input class="form-input" id="age" name="age" type="number" min="18" max="80" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="school">毕业/在读院校</label>
+                    <input class="form-input" id="school" name="school" type="text" placeholder="学校名称 + 专业" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="exp">教龄</label>
+                    <input class="form-input" id="exp" name="exp" type="number" min="0" max="60" required placeholder="授课年限">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">擅长科目</label>
+                    <div class="form-checkbox-group">
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="数学"> 数学</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="语文"> 语文</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="英语"> 英语</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="物理"> 物理</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="化学"> 化学</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="生物"> 生物</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="政治"> 政治</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="历史"> 历史</label>
+                        <label><input class="form-checkbox" type="checkbox" name="subjects" value="地理"> 地理</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">可授课年级</label>
+                    <div class="form-checkbox-group">
+                        <label><input class="form-checkbox" type="checkbox" name="grades" value="学前"> 学前</label>
+                        <label><input class="form-checkbox" type="checkbox" name="grades" value="小学"> 小学</label>
+                        <label><input class="form-checkbox" type="checkbox" name="grades" value="初中"> 初中</label>
+                        <label><input class="form-checkbox" type="checkbox" name="grades" value="高中"> 高中</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">授课方式</label>
+                    <div class="form-radio-group">
+                        <label><input class="form-radio" type="radio" name="teachType" value="线上" required> 线上</label>
+                        <label><input class="form-radio" type="radio" name="teachType" value="线下"> 线下</label>
+                        <label><input class="form-radio" type="radio" name="teachType" value="均可"> 均可</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="time">可授课时间段</label>
+                    <textarea class="form-textarea" id="time" name="time" placeholder="如：工作日晚上、周末全天" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="area">授课区域</label>
+                    <input class="form-input" id="area" name="area" type="text" placeholder="如：杭州市西湖区">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="desc">教学简介</label>
+                    <textarea class="form-textarea" id="desc" name="desc" placeholder="可填写教学风格、成功案例、特色优势等"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="contact">联系方式</label>
+                    <input class="form-input" id="contact" name="contact" type="text" placeholder="电话或微信" required>
+                </div>
+                <button type="submit" class="save-btn">保存</button>
+            </form>
+            <a href="teacher_main.html" class="back-link">返回教师中心</a>
+        </div>
+    </div>
+    <script>
+        // 获取当前登录教师信息
+        function getCurrentTeacher() {
+            return JSON.parse(localStorage.getItem('currentTeacher') || 'null');
+        }
+        // 页面加载时显示欢迎词
+        window.onload = function() {
+            var teacher = getCurrentTeacher();
+            if (!teacher) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.getElementById('welcomeText').textContent = '欢迎，' + (teacher.username || teacher.phone) + '老师';
+            loadProfile();
+        };
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('currentTeacher');
+            window.location.href = 'index.html';
+        }
+        // 授课方式与授课区域联动
+        const teachTypeRadios = document.querySelectorAll('input[name="teachType"]');
+        const areaInput = document.getElementById('area');
+        const areaLabel = document.querySelector('label[for="area"]');
+        function updateAreaRequired() {
+            const teachType = Array.from(teachTypeRadios).find(r => r.checked)?.value;
+            if (teachType === '线上') {
+                areaInput.required = false;
+                areaInput.style.border = '1.5px solid #BFD2F6';
+                areaLabel.innerHTML = '授课区域';
+            } else {
+                areaInput.required = true;
+                areaInput.style.border = '2px solid #2A4D9B';
+                areaLabel.innerHTML = '授课区域 <span style="color:#FFD600">*</span>';
+            }
+        }
+        teachTypeRadios.forEach(r => r.addEventListener('change', updateAreaRequired));
+        // 初始化时也调用
+        updateAreaRequired();
+        // 表单提交校验
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            const teachType = Array.from(teachTypeRadios).find(r => r.checked)?.value;
+            if ((teachType === '线下' || teachType === '均可') && !areaInput.value.trim()) {
+                areaInput.focus();
+                areaInput.style.border = '2px solid #FF4D4F';
+                areaLabel.innerHTML = '授课区域 <span style="color:#FF4D4F">（必填）</span>';
+                e.preventDefault();
+                return false;
+            }
+        }, true);
+        // 保存表单
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                name: form.name.value.trim(),
+                gender: form.gender.value,
+                age: form.age.value,
+                school: form.school.value.trim(),
+                exp: form.exp.value,
+                subjects: Array.from(form.subjects).filter(cb=>cb.checked).map(cb=>cb.value),
+                grades: Array.from(form.grades).filter(cb=>cb.checked).map(cb=>cb.value),
+                teachType: form.teachType.value,
+                time: form.time.value.trim(),
+                area: form.area.value.trim(),
+                desc: form.desc.value.trim(),
+                contact: form.contact.value.trim()
+            };
+            
+            // 直接显示成功提示
+            const successTip = document.getElementById('successTip');
+            successTip.style.display = 'block';
+            
+            // 保存数据
+            const teacher = getCurrentTeacher();
+            if (teacher) {
+                const profileKey = `teacher_profile_${teacher.username || teacher.phone}`;
+                localStorage.setItem(profileKey, JSON.stringify(data));
+            }
+            
+            // 1秒后隐藏提示
+            setTimeout(() => {
+                successTip.style.display = 'none';
+            }, 1000);
+        });
+        // 加载已保存信息
+        function loadProfile() {
+            const teacher = getCurrentTeacher();
+            if (!teacher) return;
+            // 使用账号信息作为key来获取个人信息
+            const profileKey = `teacher_profile_${teacher.username || teacher.phone}`;
+            const data = JSON.parse(localStorage.getItem(profileKey) || 'null');
+            if (!data) return;
+            const form = document.getElementById('profileForm');
+            form.name.value = data.name || '';
+            if (data.gender) {
+                Array.from(form.gender).forEach(r => { r.checked = (r.value === data.gender); });
+            }
+            form.age.value = data.age || '';
+            form.school.value = data.school || '';
+            form.exp.value = data.exp || '';
+            if (data.subjects) {
+                Array.from(form.subjects).forEach(cb => { cb.checked = data.subjects.includes(cb.value); });
+            }
+            if (data.grades) {
+                Array.from(form.grades).forEach(cb => { cb.checked = data.grades.includes(cb.value); });
+            }
+            if (data.teachType) {
+                Array.from(form.teachType).forEach(r => { r.checked = (r.value === data.teachType); });
+            }
+            form.time.value = data.time || '';
+            form.area.value = data.area || '';
+            form.desc.value = data.desc || '';
+            form.contact.value = data.contact || '';
+            // 初始化时也要更新授课区域的必填状态
+            updateAreaRequired();
+        }
+    </script>
+</body>
+</html> 

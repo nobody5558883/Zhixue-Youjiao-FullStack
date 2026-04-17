@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信息费订单 - 智学优教</title>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            background: #F5F7FA;
+            font-family: Arial, Helvetica, sans-serif;
+            padding-top: 72px;
+        }
+        .navbar {
+            width: 100vw;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            z-index: 20;
+        }
+        .navbar-inner {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .navbar-logo {
+            height: 48px;
+        }
+        .navbar-title {
+            font-size: 24px;
+            color: #2A4D9B;
+            font-weight: bold;
+        }
+        .navbar-page-title {
+            font-size: 22px;
+            color: #2A4D9B;
+            font-weight: 500;
+            padding-left: 16px;
+            margin-left: 16px;
+            border-left: 1px solid #ccc;
+        }
+        .navbar-right .back-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .navbar-right .back-btn:hover {
+            background: #1d3570;
+        }
+        .bg-img {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: url('background.jpg') center center/cover no-repeat;
+        }
+        .bg-mask {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.85);
+            z-index: 1;
+        }
+        .main-container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 32px auto 0 auto;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 32px 24px 24px 24px;
+            min-height: 600px;
+        }
+        .tab-bar {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #2A4D9B;
+            font-weight: bold;
+            padding: 8px 24px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .tab-btn.active {
+            background: #E3EAFD;
+            color: #FFD600;
+        }
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .order-card {
+            background: rgba(247, 250, 255, 0.95);
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(42,77,155,0.08);
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 6px solid #2A4D9B;
+            position: relative;
+        }
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .order-id {
+            font-size: 15px;
+            color: #888;
+        }
+        .order-student {
+            font-size: 16px;
+            color: #2A4D9B;
+            font-weight: bold;
+        }
+        .order-time, .order-amount {
+            font-size: 15px;
+            color: #555;
+        }
+        .order-amount {
+            color: #FFD600;
+            font-weight: bold;
+        }
+        .order-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .pay-btn {
+            background: #FFD600;
+            color: #2A4D9B;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .pay-btn:hover {
+            background: #ffe066;
+        }
+        .detail-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .detail-btn:hover {
+            background: #1d3570;
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 28px 24px 28px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2A4D9B;
+            margin-bottom: 16px;
+        }
+        .modal-body {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .pay-confirm-btn { background: #FFD600; color: #2A4D9B; }
+        .close-btn { background: #f0f0f0; color: #555; }
+        .modal-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .modal-row .label { color: #888; }
+        .modal-row .value { color: #2A4D9B; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <img src="logo.jpg" alt="logo" class="navbar-logo">
+                <span class="navbar-title">智学优教</span>
+                <span class="navbar-page-title">信息费订单</span>
+            </div>
+            <div class="navbar-right">
+                <a href="teacher_main.html" class="back-btn">返回</a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-img"></div>
+    <div class="bg-mask"></div>
+    <div class="main-container">
+        <div class="tab-bar">
+            <button class="tab-btn active" id="tabPending" onclick="switchTab('pending')">待支付订单</button>
+            <button class="tab-btn" id="tabHistory" onclick="switchTab('history')">历史订单</button>
+        </div>
+        <div class="order-list" id="orderList">
+            <!-- 订单卡片由JS渲染 -->
+        </div>
+    </div>
+    <!-- 支付弹窗 -->
+    <div class="modal-overlay" id="payModal">
+        <div class="modal-content">
+            <div class="modal-title">订单支付</div>
+            <div class="modal-body" id="payModalBody"></div>
+            <div class="modal-actions">
+                <button class="modal-btn pay-confirm-btn" onclick="confirmPay()">确认支付</button>
+                <button class="modal-btn close-btn" onclick="closePayModal()">取消</button>
+            </div>
+        </div>
+    </div>
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-title">订单详情</div>
+            <div class="modal-body" id="detailModalBody"></div>
+            <div class="modal-actions">
+                <button class="modal-btn close-btn" onclick="closeDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 模拟订单数据
+        let pendingOrders = [
+            {
+                id: '20240610001',
+                student: '张三',
+                time: '2024-06-10 10:20',
+                amount: 200,
+                subject: '数学',
+                payType: '',
+                status: '待支付',
+                teachType: '线上',
+                startTime: '2024-06-15 19:00',
+                endTime: '2024-06-15 20:30',
+                record: []
+            }
+        ];
+        let historyOrders = [
+            {
+                id: '20240520001',
+                student: '李四',
+                time: '2024-05-20 09:10',
+                amount: 180,
+                subject: '英语',
+                payType: '微信',
+                status: '已完成',
+                teachType: '线下',
+                startTime: '2024-05-25 14:00',
+                endTime: '2024-05-25 15:30',
+                record: [
+                    { action: '下单', time: '2024-05-20 09:10' },
+                    { action: '支付', time: '2024-05-20 09:15', payType: '微信' }
+                ]
+            }
+        ];
+        let currentTab = 'pending';
+        let currentPayOrder = null;
+        let currentDetailOrder = null;
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabPending').classList.toggle('active', tab === 'pending');
+            document.getElementById('tabHistory').classList.toggle('active', tab === 'history');
+            loadOrders();
+        }
+
+        function loadOrders() {
+            const list = document.getElementById('orderList');
+            list.innerHTML = '';
+            let orders = currentTab === 'pending' ? pendingOrders : historyOrders;
+            if (orders.length === 0) {
+                list.innerHTML = `<div style="color:#888; font-size:16px; margin-top:40px; text-align:center;">暂无${currentTab === 'pending' ? '待支付' : '历史'}订单</div>`;
+                return;
+            }
+            for (const o of orders) {
+                let card = `<div class="order-card">
+                    <div class="order-info">
+                        <div class="order-id">订单号：${o.id}</div>
+                        <div class="order-student">学生：${o.student}</div>
+                        <div class="order-time">${currentTab === 'pending' ? '下单时间' : '成交时间'}：${o.time}</div>
+                        <div class="order-amount">￥${o.amount}</div>
+                    </div>
+                    <div class="order-actions">`;
+                if (currentTab === 'pending') {
+                    card += `<button class="pay-btn" onclick="showPayModal('${o.id}')">立即支付</button>`;
+                } else {
+                    card += `<button class="detail-btn" onclick="showDetailModal('${o.id}')">查看详情</button>`;
+                }
+                card += `</div></div>`;
+                list.innerHTML += card;
+            }
+        }
+
+        function showPayModal(orderId) {
+            currentPayOrder = pendingOrders.find(o => o.id === orderId);
+            if (!currentPayOrder) return;
+            let html = '';
+            html += `<div class="modal-row"><span class="label">订单号</span><span class="value">${currentPayOrder.id}</span></div>`;
+            html += `<div class="modal-row"><span class="label">应付金额</span><span class="value">￥${currentPayOrder.amount}</span></div>`;
+            html += `<div class="modal-row"><span class="label">支付方式</span>
+                <select id="payTypeSelect">
+                    <option value="微信">微信</option>
+                    <option value="支付宝">支付宝</option>
+                    <option value="银行卡">银行卡</option>
+                </select></div>`;
+            document.getElementById('payModalBody').innerHTML = html;
+            document.getElementById('payModal').style.display = 'flex';
+        }
+        function closePayModal() {
+            document.getElementById('payModal').style.display = 'none';
+        }
+        function confirmPay() {
+            const payType = document.getElementById('payTypeSelect').value;
+            if (!currentPayOrder) return;
+            // 模拟支付
+            currentPayOrder.payType = payType;
+            currentPayOrder.status = '已完成';
+            currentPayOrder.time = new Date().toLocaleString();
+            currentPayOrder.record.push({ action: '支付', time: currentPayOrder.time, payType });
+            // 移动到历史订单
+            historyOrders.unshift(currentPayOrder);
+            pendingOrders = pendingOrders.filter(o => o.id !== currentPayOrder.id);
+            closePayModal();
+            loadOrders();
+            alert('支付成功！');
+        }
+        function showDetailModal(orderId) {
+            currentDetailOrder = historyOrders.find(o => o.id === orderId);
+            if (!currentDetailOrder) return;
+            let html = '';
+            html += `<div class="modal-row"><span class="label">订单号</span><span class="value">${currentDetailOrder.id}</span></div>`;
+            html += `<div class="modal-row"><span class="label">学生</span><span class="value">${currentDetailOrder.student}</span></div>`;
+            html += `<div class="modal-row"><span class="label">科目</span><span class="value">${currentDetailOrder.subject}</span></div>`;
+            html += `<div class="modal-row"><span class="label">成交时间</span><span class="value">${currentDetailOrder.time}</span></div>`;
+            html += `<div class="modal-row"><span class="label">金额</span><span class="value">￥${currentDetailOrder.amount}</span></div>`;
+            html += `<div class="modal-row"><span class="label">授课方式</span><span class="value">${currentDetailOrder.teachType}</span></div>`;
+            html += `<div class="modal-row"><span class="label">起止时间</span><span class="value">${currentDetailOrder.startTime} ~ ${currentDetailOrder.endTime}</span></div>`;
+            html += `<div class="modal-row"><span class="label">支付方式</span><span class="value">${currentDetailOrder.payType}</span></div>`;
+            html += `<div class="modal-row"><span class="label">交易记录</span><span class="value">`;
+            for (const r of currentDetailOrder.record) {
+                html += `<div>${r.action}：${r.time}${r.payType ? '（' + r.payType + '）' : ''}</div>`;
+            }
+            html += `</span></div>`;
+            document.getElementById('detailModalBody').innerHTML = html;
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+        // 初始化
+        loadOrders();
+    </script>
+</body>
+</html> 

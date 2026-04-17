@@ -1,0 +1,27 @@
+CREATE DATABASE IF NOT EXISTS teacher_db;
+USE teacher_db;
+
+CREATE TABLE teacher_user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE teacher_profile (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT NOT NULL,
+    name VARCHAR(50),
+    gender ENUM('男', '女'),
+    age INT,
+    school VARCHAR(100),
+    exp INT,
+    subjects VARCHAR(200),      -- 逗号分隔，如：'数学,语文,英语'
+    grades VARCHAR(100),        -- 逗号分隔，如：'小学,初中'
+    teach_type ENUM('线上', '线下', '均可'),
+    time_period VARCHAR(200),
+    area VARCHAR(100),
+    description TEXT,
+    contact VARCHAR(100),
+    FOREIGN KEY (teacher_id) REFERENCES teacher_user(id) ON DELETE CASCADE
+); 

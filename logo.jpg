@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忘记密码 - 智学优教</title>
+    <style>
+        body { 
+            background: #F5F7FA; 
+            margin: 0; 
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 4px 16px rgba(42,77,155,0.10);
+            padding: 48px 32px;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px;
+        }
+        .title {
+            font-size: 24px;
+            color: #2A4D9B;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #2A4D9B;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #BFD2F6;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            border-color: #2A4D9B;
+        }
+        .send-code-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        .send-code-btn:hover {
+            background: #1d3570;
+        }
+        .send-code-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .submit-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover {
+            background: #1d3570;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            color: #2A4D9B;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .back-link:hover {
+            color: #FFD600;
+        }
+        .error {
+            color: #ff4d4f;
+            font-size: 14px;
+            margin-top: 4px;
+            display: none;
+        }
+        .success {
+            color: #52c41a;
+            font-size: 14px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">找回密码</div>
+        <form id="resetForm" onsubmit="return false;">
+            <div class="form-group">
+                <label for="phone">手机号</label>
+                <input type="text" id="phone" maxlength="11" placeholder="请输入手机号" required>
+                <div class="error" id="phoneError"></div>
+            </div>
+            <div class="form-group">
+                <label for="code">验证码</label>
+                <input type="text" id="code" maxlength="6" placeholder="请输入验证码" required>
+                <button type="button" class="send-code-btn" id="sendCodeBtn" onclick="sendCode()">发送验证码</button>
+                <div class="error" id="codeError"></div>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">新密码</label>
+                <input type="password" id="newPassword" maxlength="20" placeholder="请输入新密码" required>
+                <div class="error" id="passwordError"></div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">确认新密码</label>
+                <input type="password" id="confirmPassword" maxlength="20" placeholder="请再次输入新密码" required>
+                <div class="error" id="confirmError"></div>
+            </div>
+            <button type="submit" class="submit-btn" onclick="resetPassword()">重置密码</button>
+        </form>
+        <a href="index.html" class="back-link">返回登录</a>
+    </div>
+    <script>
+        let codeSent = false;
+        let timer = null;
+        let countdown = 60;
+        let generatedCode = '';
+
+        function validatePhone(phone) {
+            return /^1[3-9]\d{9}$/.test(phone);
+        }
+
+        function sendCode() {
+            const phone = document.getElementById('phone').value.trim();
+            const phoneError = document.getElementById('phoneError');
+            const sendCodeBtn = document.getElementById('sendCodeBtn');
+
+            if (!validatePhone(phone)) {
+                phoneError.textContent = '请输入有效的手机号';
+                phoneError.style.display = 'block';
+                return;
+            }
+
+            // 检查手机号是否已注册
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const students = JSON.parse(localStorage.getItem('students') || '[]');
+            const isTeacher = teachers.some(t => t.phone === phone);
+            const isStudent = students.some(s => s.phone === phone);
+
+            if (!isTeacher && !isStudent) {
+                phoneError.textContent = '该手机号未注册';
+                phoneError.style.display = 'block';
+                return;
+            }
+
+            phoneError.style.display = 'none';
+            codeSent = true;
+            generatedCode = Math.random().toString().slice(2, 8);
+            alert('验证码：' + generatedCode);
+
+            // 开始倒计时
+            sendCodeBtn.disabled = true;
+            timer = setInterval(() => {
+                if (countdown > 0) {
+                    sendCodeBtn.textContent = `${countdown}秒后重试`;
+                    countdown--;
+                } else {
+                    clearInterval(timer);
+                    sendCodeBtn.disabled = false;
+                    sendCodeBtn.textContent = '发送验证码';
+                    countdown = 60;
+                }
+            }, 1000);
+        }
+
+        function resetPassword() {
+            const phone = document.getElementById('phone').value.trim();
+            const code = document.getElementById('code').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const codeError = document.getElementById('codeError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmError = document.getElementById('confirmError');
+
+            // 重置错误提示
+            codeError.style.display = 'none';
+            passwordError.style.display = 'none';
+            confirmError.style.display = 'none';
+
+            // 验证手机号
+            if (!validatePhone(phone)) {
+                document.getElementById('phoneError').textContent = '请输入有效的手机号';
+                document.getElementById('phoneError').style.display = 'block';
+                return;
+            }
+
+            // 验证验证码
+            if (!codeSent || code !== generatedCode) {
+                codeError.textContent = '验证码错误';
+                codeError.style.display = 'block';
+                return;
+            }
+
+            // 验证密码
+            if (newPassword.length < 6) {
+                passwordError.textContent = '密码长度不能少于6位';
+                passwordError.style.display = 'block';
+                return;
+            }
+
+            // 验证确认密码
+            if (newPassword !== confirmPassword) {
+                confirmError.textContent = '两次输入的密码不一致';
+                confirmError.style.display = 'block';
+                return;
+            }
+
+            // 更新密码
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const students = JSON.parse(localStorage.getItem('students') || '[]');
+            
+            let updated = false;
+            
+            // 更新教师密码
+            teachers.forEach(teacher => {
+                if (teacher.phone === phone) {
+                    teacher.password = newPassword;
+                    updated = true;
+                }
+            });
+            
+            // 更新学生密码
+            students.forEach(student => {
+                if (student.phone === phone) {
+                    student.password = newPassword;
+                    updated = true;
+                }
+            });
+
+            if (updated) {
+                localStorage.setItem('teachers', JSON.stringify(teachers));
+                localStorage.setItem('students', JSON.stringify(students));
+                alert('密码重置成功！');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html> 

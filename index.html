@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系客服 - 智学优教</title>
+    <style>
+        html, body { 
+            height: 100%; 
+            width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: Arial, Helvetica, sans-serif;
+            padding-top: 80px;
+        }
+        .bg-img {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: url('background.jpg') center center/cover no-repeat;
+        }
+        .bg-mask {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.85);
+            z-index: 1;
+        }
+        .service-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 700px;
+            height: 80vh;
+            max-height: 800px;
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 4px 16px rgba(42,77,155,0.10);
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            padding: 18px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 20px;
+            color: #2A4D9B;
+            font-weight: bold;
+            text-align: center;
+        }
+        .chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+        .message.system {
+            align-items: center;
+        }
+        .message .content {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .message.bot .content {
+            background: #F0F4FF;
+            color: #2A4D9B;
+            align-self: flex-start;
+        }
+        .common-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .question-btn {
+            background: transparent;
+            border: 1.5px solid #BFD2F6;
+            color: #2A4D9B;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        .question-btn:hover {
+            background: #E3EAFD;
+            border-color: #2A4D9B;
+        }
+        .chat-footer {
+            padding: 16px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .human-support-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .human-support-btn:hover {
+            background: #1d3570;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2A4D9B;
+            margin-bottom: 16px;
+        }
+        .modal-body {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .connect-btn { background: #2A4D9B; color: #fff; }
+        .close-btn { background: #f0f0f0; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="bg-img"></div>
+    <div class="bg-mask"></div>
+
+    <div class="service-container">
+        <div class="chat-header">智能客服</div>
+        <div class="chat-box" id="chatBox">
+            <!-- Messages will be appended here -->
+        </div>
+        <div class="chat-footer">
+            <button class="human-support-btn" onclick="requestHumanSupport()">联系人工客服</button>
+        </div>
+    </div>
+
+    <!-- Modal for Human Support -->
+    <div class="modal-overlay" id="humanSupportModal">
+        <div class="modal-content">
+            <div class="modal-title">人工客服支持</div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be set by JS -->
+            </div>
+            <div class="modal-actions" id="modalActions">
+                 <!-- Buttons will be set by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const modal = document.getElementById('humanSupportModal');
+        const modalBody = document.getElementById('modalBody');
+        const modalActions = document.getElementById('modalActions');
+
+        const autoReplies = {
+            '支付失败': '您好，关于支付失败问题，请您检查网络连接或更换支付方式。如果问题仍未解决，建议您在服务时段联系人工客服处理。',
+            '简历上传出错': '您好，简历上传失败可能是由于文件格式或大小不符导致。请确保您的简历是PDF或Word格式，且文件大小不超过10MB。',
+            '身份认证异常': '您好，身份认证遇到问题，请确保您上传的证件照片清晰、完整。如果多次尝试仍然失败，请联系人工客服协助您完成认证。'
+        };
+
+        function addMessage(sender, content, isHtml = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('content');
+            if (isHtml) {
+                contentDiv.innerHTML = content;
+            } else {
+                contentDiv.textContent = content;
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showCommonQuestions() {
+            let questionsHtml = '您好！我是智能客服，请问有什么可以帮您？<div class="common-questions">';
+            for (const q in autoReplies) {
+                questionsHtml += `<button class="question-btn" onclick="handleCommonQuestion('${q}')">${q}</button>`;
+            }
+            questionsHtml += '</div>';
+            addMessage('bot', questionsHtml, true);
+        }
+        
+        function handleCommonQuestion(question) {
+            const reply = autoReplies[question];
+            addMessage('bot', reply);
+        }
+
+        function requestHumanSupport() {
+            const now = new Date();
+            const hour = now.getHours();
+            const serviceStartTime = 9; // 9:00
+            const serviceEndTime = 18; // 18:00
+            const isInServiceTime = hour >= serviceStartTime && hour < serviceEndTime;
+
+            let bodyHtml = `我们的服务时间是工作日 ${serviceStartTime}:00 - ${serviceEndTime}:00。<br>客服电话：400-123-4567。`;
+            let actionsHtml = '';
+
+            if (isInServiceTime) {
+                bodyHtml += '<br>当前在服务时段内，您可以接入在线人工客服。';
+                actionsHtml += '<button class="modal-btn connect-btn" onclick="connectToHuman()">立即接入</button>';
+            } else {
+                bodyHtml += '<br>当前非服务时段，请您在服务时间内联系我们或拨打客服电话。';
+            }
+            actionsHtml += '<button class="modal-btn close-btn" onclick="closeModal()">关闭</button>';
+            
+            modalBody.innerHTML = bodyHtml;
+            modalActions.innerHTML = actionsHtml;
+            modal.style.display = 'flex';
+        }
+
+        function connectToHuman() {
+            alert('正在为您转接人工客服，请稍候...');
+            closeModal();
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Initial greeting
+        window.onload = function() {
+            showCommonQuestions();
+        };
+    </script>
+</body>
+</html> 

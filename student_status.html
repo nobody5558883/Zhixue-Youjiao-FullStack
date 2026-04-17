@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息 - 智学优教</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body { height: 100%; width: 100vw; overflow-x: hidden; }
+        body { background: #F5F7FA; font-family: Arial, Helvetica, sans-serif; padding-top: 72px; }
+        .bg-img {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: url('background.jpg') center center/cover no-repeat;
+        }
+        .bg-mask {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.85);
+            z-index: 1;
+        }
+        .navbar { z-index: 20; position: fixed; width: 100vw; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; top: 0; left: 0; right: 0; height: 72px; }
+        .navbar-inner { width: 100%; max-width: 1200px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .navbar-left { display: flex; align-items: center; gap: 16px; }
+        .navbar-logo { height: 48px; }
+        .navbar-title { font-size: 24px; color: #2A4D9B; font-weight: bold; }
+        .navbar-page-title { font-size: 22px; color: #2A4D9B; font-weight: 500; padding-left: 16px; margin-left: 16px; border-left: 1px solid #ccc; }
+        .navbar-right .back-btn { background: #2A4D9B; color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 15px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+        .navbar-right .back-btn:hover { background: #1d3570; }
+        .main-container { z-index: 2; position: relative; max-width: 500px; margin: 32px auto 0 auto; background: rgba(255,255,255,0.9); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(31,38,135,0.08); padding: 32px 28px 24px 28px; min-height: 480px; }
+        .section-title { font-size: 18px; color: #2A4D9B; font-weight: bold; margin-bottom: 12px; margin-top: 18px; }
+        .form-row { display: flex; align-items: center; margin-bottom: 16px; }
+        .form-label { width: 90px; color: #555; font-size: 15px; }
+        .form-value, .form-input, .form-select { flex: 1; font-size: 15px; color: #222; background: none; border: none; padding: 6px 0; }
+        .form-input, .form-select { background: #f7faff; border: 1px solid #dbe6f7; border-radius: 6px; padding: 6px 10px; font-size: 15px; font-weight: normal; }
+        .form-input[readonly], .form-select[disabled] {
+            background: #f7faff;
+            border: 1.5px solid #222;
+            border-radius: 8px;
+            color: #222;
+            font-size: 15px;
+            font-weight: normal;
+            text-align: left;
+        }
+        .form-actions { text-align: right; margin-top: 24px; }
+        .edit-btn, .save-btn, .cancel-btn { background: #2A4D9B; color: #fff; border: none; border-radius: 8px; padding: 8px 24px; font-size: 15px; cursor: pointer; margin-left: 10px; }
+        .edit-btn:hover, .save-btn:hover, .cancel-btn:hover { background: #1d3570; }
+        .error-msg { color: #e74c3c; font-size: 14px; margin-bottom: 10px; text-align: left; }
+        @media (max-width: 600px) { .main-container { max-width: 98vw; padding: 18px 4vw; } .form-label { width: 70px; } }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <img src="logo.jpg" alt="logo" class="navbar-logo">
+                <span class="navbar-title">智学优教</span>
+                <span class="navbar-page-title">个人信息</span>
+            </div>
+            <div class="navbar-right">
+                <a href="student_main.html" class="back-btn">返回</a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-img"></div>
+    <div class="bg-mask"></div>
+    <div class="main-container">
+        <form id="profileForm" autocomplete="off" onsubmit="return false;">
+            <div class="section-title">基础资料</div>
+            <div class="form-row">
+                <div class="form-label">姓名</div>
+                <input class="form-input" id="name" type="text" value="张三" readonly>
+            </div>
+            <div class="form-row">
+                <div class="form-label">性别</div>
+                <select class="form-select" id="gender" disabled>
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-label">年龄</div>
+                <input class="form-input" id="age" type="number" value="16" readonly>
+            </div>
+            <div class="form-row">
+                <div class="form-label">学校</div>
+                <input class="form-input" id="school" type="text" value="第一中学" readonly>
+            </div>
+            <div class="form-row">
+                <div class="form-label">年级</div>
+                <input class="form-input" id="grade" type="text" value="高一" readonly>
+            </div>
+            <div class="section-title">联系方式</div>
+            <div class="form-row">
+                <div class="form-label">手机号</div>
+                <input class="form-input" id="phone" type="text" value="13812345678" readonly>
+            </div>
+            <div class="form-row">
+                <div class="form-label">紧急联系人</div>
+                <input class="form-input" id="emergency" type="text" value="李四（父亲）" readonly>
+            </div>
+            <div class="form-row">
+                <div class="form-label">紧急联系电话</div>
+                <input class="form-input" id="emergencyPhone" type="text" value="13987654321" readonly>
+            </div>
+            <div class="error-msg" id="errorMsg" style="display:none;"></div>
+            <div class="form-actions">
+                <button type="button" class="edit-btn" id="editBtn" onclick="enableEdit()">编辑</button>
+                <button type="button" class="save-btn" id="saveBtn" style="display:none;" onclick="saveProfile()">保存</button>
+                <button type="button" class="cancel-btn" id="cancelBtn" style="display:none;" onclick="cancelEdit()">取消</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        // 初始化性别
+        document.getElementById('gender').value = '男';
+        let originalData = {
+            name: '张三', gender: '男', age: '16', school: '第一中学', grade: '高一', phone: '13812345678', emergency: '李四（父亲）', emergencyPhone: '13987654321'
+        };
+        function enableEdit() {
+            for (const id of ['name','gender','age','school','grade','phone','emergency','emergencyPhone']) {
+                let el = document.getElementById(id);
+                if (el.tagName === 'SELECT') el.disabled = false;
+                else el.readOnly = false;
+            }
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = '';
+            document.getElementById('cancelBtn').style.display = '';
+        }
+        function cancelEdit() {
+            for (const id in originalData) {
+                let el = document.getElementById(id);
+                if (el.tagName === 'SELECT') el.value = originalData[id];
+                else el.value = originalData[id];
+                if (el.tagName === 'SELECT') el.disabled = true;
+                else el.readOnly = true;
+            }
+            document.getElementById('editBtn').style.display = '';
+            document.getElementById('saveBtn').style.display = 'none';
+            document.getElementById('cancelBtn').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+        function saveProfile() {
+            // 校验
+            let name = document.getElementById('name').value.trim();
+            let gender = document.getElementById('gender').value;
+            let age = document.getElementById('age').value.trim();
+            let school = document.getElementById('school').value.trim();
+            let grade = document.getElementById('grade').value.trim();
+            let phone = document.getElementById('phone').value.trim();
+            let emergency = document.getElementById('emergency').value.trim();
+            let emergencyPhone = document.getElementById('emergencyPhone').value.trim();
+            let error = '';
+            if (!name) error = '姓名不能为空';
+            else if (!/^[\u4e00-\u9fa5a-zA-Z]+$/.test(name)) error = '姓名格式不正确';
+            else if (!age || isNaN(age) || age < 5 || age > 30) error = '年龄应为5-30岁';
+            else if (!school) error = '学校不能为空';
+            else if (!grade) error = '年级不能为空';
+            else if (!/^1[3-9]\d{9}$/.test(phone)) error = '手机号格式不正确';
+            else if (!emergency) error = '紧急联系人不能为空';
+            else if (!/^1[3-9]\d{9}$/.test(emergencyPhone)) error = '紧急联系电话格式不正确';
+            if (error) {
+                document.getElementById('errorMsg').innerText = error;
+                document.getElementById('errorMsg').style.display = '';
+                return;
+            }
+            // 模拟保存
+            originalData = { name, gender, age, school, grade, phone, emergency, emergencyPhone };
+            cancelEdit();
+            alert('保存成功！');
+        }
+    </script>
+</body>
+</html> 

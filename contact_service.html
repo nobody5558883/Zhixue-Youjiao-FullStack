@@ -1,0 +1,131 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+
+export default function LoginPage() {
+  const [isStudent, setIsStudent] = useState(true);
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle login logic here
+    console.log('Login attempt:', { ...formData, isStudent });
+  };
+
+  return (
+    <div className="min-h-screen bg-background-light bg-opacity-90 flex flex-col items-center justify-center p-4">
+      {/* Background texture */}
+      <div className="fixed inset-0 bg-[url('/texture.png')] opacity-5 pointer-events-none" />
+      
+      <div className="w-full max-w-md space-y-8">
+        {/* Logo and Title */}
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            智学优教
+          </h1>
+          <p className="text-gray-600 text-sm">
+            大学生家教O2O一站式服务平台
+          </p>
+        </div>
+
+        {/* Login Form */}
+        <div className="bg-background-paper rounded-lg shadow-lg p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* User Type Selection */}
+            <div className="flex space-x-4 justify-center">
+              <button
+                type="button"
+                onClick={() => setIsStudent(true)}
+                className={`px-4 py-2 rounded-full ${
+                  isStudent
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                我是学生
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsStudent(false)}
+                className={`px-4 py-2 rounded-full ${
+                  !isStudent
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                我是教师
+              </button>
+            </div>
+
+            {/* Username Input */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                用户名
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="请输入您的用户名"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              />
+            </div>
+
+            {/* Password Input */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                密码
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="请输入您的密码"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              />
+            </div>
+
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <a href="#" className="text-sm text-primary hover:text-primary-dark">
+                忘记密码？
+              </a>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              登录
+            </button>
+
+            {/* Register Link */}
+            <div className="text-center">
+              <a href="#" className="text-sm text-primary hover:text-primary-dark">
+                注册账号
+              </a>
+            </div>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-xs text-gray-500 mt-8">
+          <a href="#" className="hover:text-gray-700">服务条款</a>
+          <span className="mx-2">|</span>
+          <a href="#" className="hover:text-gray-700">隐私政策</a>
+        </div>
+      </div>
+    </div>
+  );
+} 

@@ -1,0 +1,19 @@
+import './globals.css'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '智学优教 - 大学生家教O2O一站式服务平台',
+  description: '智学优教是面向大学生的家教O2O一站式服务平台，连接优秀教师和学生。',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="zh">
+      <body>{children}</body>
+    </html>
+  )
+} 

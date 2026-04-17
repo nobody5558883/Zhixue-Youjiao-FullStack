@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师中心 - 智学优教</title>
+    <style>
+        html, body { height: 100%; }
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .bg-img {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: url('background.jpg') center center/cover no-repeat;
+        }
+        .bg-mask {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.75);
+            z-index: 1;
+        }
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            margin-top: 110px;
+            padding: 0 40px;
+        }
+        .navbar {
+            width: 100vw;
+            min-width: 320px;
+            background: #F5F7FA;
+            box-shadow: 0 2px 8px rgba(42,77,155,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            z-index: 10;
+        }
+        .navbar-inner {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .navbar-logo {
+            height: 48px;
+        }
+        .navbar-title {
+            font-size: 26px;
+            color: #2A4D9B;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .welcome {
+            color: #2A4D9B;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .logout-btn {
+            background: #2A4D9B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #1d3570;
+        }
+        .page-title {
+            text-align: center;
+            font-size: 22px;
+            color: #2A4D9B;
+            font-weight: bold;
+            margin: 32px 0 32px 0;
+        }
+        .card-list {
+            display: grid;
+            grid-template-columns: repeat(3, 300px);
+            gap: 20px 20px;
+            margin-top: 40px;
+            justify-content: center;
+            align-items: start;
+        }
+        .card-btn {
+            background: rgba(255,255,255,0.95);
+            border-radius: 22px;
+            box-shadow: 0 4px 16px rgba(42,77,155,0.10);
+            width: 300px;
+            height: 140px;
+            font-size: 26px;
+            color: #2A4D9B;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            transition: box-shadow 0.2s, background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-btn:hover {
+            background: #FFF7D6;
+            box-shadow: 0 8px 32px rgba(42,77,155,0.13);
+        }
+        @media (max-width: 1200px) {
+            .navbar-inner, .main-container {
+                max-width: 98vw;
+                padding: 0 2vw;
+            }
+            .card-btn {
+                width: 38vw;
+                min-width: 140px;
+                max-width: 320px;
+            }
+        }
+        @media (max-width: 700px) {
+            .navbar-title {
+                font-size: 16px;
+            }
+            .main-container {
+                padding: 0 4vw;
+            }
+            .card-btn {
+                font-size: 16px;
+                height: 80px;
+                width: 90vw;
+                min-width: 120px;
+                max-width: 100vw;
+            }
+            .navbar-inner {
+                padding: 0 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-img"></div>
+    <div class="bg-mask"></div>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-left">
+                <img src="logo.jpg" alt="logo" class="navbar-logo">
+                <span class="navbar-title">智学优教——一站式服务平台</span>
+            </div>
+            <div class="navbar-right">
+                <span class="welcome" id="welcomeText">欢迎，老师</span>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="page-title">欢迎进入教师中心</div>
+        <div class="card-list">
+            <button class="card-btn" onclick="window.location.href='teacher_profile.html'">个人信息</button>
+            <button class="card-btn">备课</button>
+            <button class="card-btn" onclick="window.location.href='teacher_schedule.html'">课程表</button>
+            <button class="card-btn" onclick="window.location.href='resume_upload.html'">简历</button>
+            <button class="card-btn">我的订单</button>
+            <button class="card-btn">我的学生</button>
+            <button class="card-btn" onclick="window.location.href='contact_service.html'">联系客服</button>
+        </div>
+    </div>
+    <script>
+        // 获取当前登录教师信息
+        function getCurrentTeacher() {
+            return JSON.parse(localStorage.getItem('currentTeacher') || 'null');
+        }
+        // 页面加载时显示欢迎词
+        window.onload = function() {
+            var teacher = getCurrentTeacher();
+            if (!teacher) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.getElementById('welcomeText').textContent = '欢迎，' + (teacher.username || teacher.phone) + '老师';
+        };
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('currentTeacher');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 
